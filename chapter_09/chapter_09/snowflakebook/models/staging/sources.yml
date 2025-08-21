@@ -1,0 +1,182 @@
+version: 2
+
+sources:
+  - name: tpch
+    description: "TPC-H Sample Dataset from Snowflake"
+    database: SNOWFLAKE_SAMPLE_DATA
+    schema: TPCH_SF1
+    tables:
+      - name: customer
+        description: "Customer information including demographics and location"
+        columns:
+          - name: c_custkey
+            description: "Primary key for customer"
+            data_tests:
+              - unique
+              - not_null
+          - name: c_name
+            description: "Customer name"
+            data_tests:
+              - not_null
+          - name: c_nationkey
+            description: "Foreign key to nation table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'nation')
+                  field: n_nationkey
+          - name: c_mktsegment
+            description: "Market segment of the customer"
+            data_tests:
+              - not_null
+              - accepted_values:
+                  values:
+                    [
+                      "AUTOMOBILE",
+                      "BUILDING",
+                      "FURNITURE",
+                      "MACHINERY",
+                      "HOUSEHOLD",
+                    ]
+
+      - name: lineitem
+        description: "Detailed line items for each order"
+        columns:
+          - name: l_orderkey
+            description: "Foreign key to orders table"
+            data_tests:
+              - not_null
+              - unique
+              - relationships:
+                  to: source('tpch', 'orders')
+                  field: o_orderkey
+          - name: l_partkey
+            description: "Foreign key to part table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'part')
+                  field: p_partkey
+          - name: l_suppkey
+            description: "Foreign key to supplier table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'supplier')
+                  field: s_suppkey
+          - name: l_quantity
+            description: "Quantity ordered"
+            data_tests:
+              - not_null
+
+          - name: l_extendedprice
+            description: "Line item extended price"
+            data_tests:
+              - not_null
+
+      - name: nation
+        description: "Reference table for nations"
+        columns:
+          - name: n_nationkey
+            description: "Primary key for nation"
+            data_tests:
+              - unique
+              - not_null
+          - name: n_name
+            description: "Nation name"
+            data_tests:
+              - unique
+              - not_null
+          - name: n_regionkey
+            description: "Foreign key to region table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'region')
+                  field: r_regionkey
+
+      - name: orders
+        description: "Order header information"
+        columns:
+          - name: o_orderkey
+            description: "Primary key for orders"
+            data_tests:
+              - unique
+              - not_null
+          - name: o_custkey
+            description: "Foreign key to customer table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'customer')
+                  field: c_custkey
+          - name: o_orderdate
+            description: "Date when order was placed"
+            data_tests:
+              - not_null
+          - name: o_orderstatus
+            description: "Current status of the order"
+            data_tests:
+              - accepted_values:
+                  values: ["O", "F", "P"]
+
+      - name: part
+        description: "Product/part information"
+        columns:
+          - name: p_partkey
+            description: "Primary key for part"
+            data_tests:
+              - unique
+              - not_null
+          - name: p_name
+            description: "Part name"
+            data_tests:
+              - not_null
+          - name: p_mfgr
+            description: "Manufacturer"
+            data_tests:
+              - not_null
+          - name: p_brand
+            description: "Brand of the part"
+            data_tests:
+              - not_null
+          - name: p_retailprice
+            description: "Suggested retail price"
+            data_tests:
+              - not_null
+
+      - name: region
+        description: "Reference table for regions"
+        columns:
+          - name: r_regionkey
+            description: "Primary key for region"
+            data_tests:
+              - unique
+              - not_null
+          - name: r_name
+            description: "Region name"
+            data_tests:
+              - unique
+              - not_null
+              - accepted_values:
+                  values: ["AFRICA", "AMERICA", "ASIA", "EUROPE", "MIDDLE EAST"]
+
+      - name: supplier
+        description: "Supplier information"
+        columns:
+          - name: s_suppkey
+            description: "Primary key for supplier"
+            data_tests:
+              - unique
+              - not_null
+          - name: s_name
+            description: "Supplier name"
+            data_tests:
+              - not_null
+          - name: s_nationkey
+            description: "Foreign key to nation table"
+            data_tests:
+              - not_null
+              - relationships:
+                  to: source('tpch', 'nation')
+                  field: n_nationkey

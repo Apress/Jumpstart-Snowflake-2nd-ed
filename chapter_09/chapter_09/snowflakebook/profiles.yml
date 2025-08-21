@@ -1,0 +1,13 @@
+snowflakebook:
+  outputs:
+    dev:
+      account: '{{ env_var("SNOWFLAKE_ACCOUNT") }}'
+      database: jumpstart
+      user: dbt_user
+      password: YourStrongPassword123
+      role: jumpstart_admin
+      schema: stg
+      threads: 1
+      type: snowflake
+      warehouse: XSCOMPUTE
+  target: dev

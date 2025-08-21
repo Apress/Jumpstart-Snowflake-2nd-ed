@@ -1,0 +1,147 @@
+version: 2
+
+models:
+  - name: stg_tpch__orders
+    description: "Staged orders data from TPCH"
+    columns:
+      - name: order_key
+        description: "Primary key for the orders table"
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_key
+        description: "Foreign key to customer table"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__customer')
+              field: customer_key
+      - name: order_status
+        description: "Status of the order"
+        data_tests:
+          - not_null
+
+      - name: total_price
+        description: "Total price of the order"
+        data_tests:
+          - not_null
+
+      - name: order_date
+        description: "Date when the order was placed"
+        data_tests:
+          - not_null
+
+      - name: order_priority
+        description: "Priority of the order"
+        data_tests:
+          - not_null
+      - name: ship_priority
+        description: "Shipping priority of the order"
+        data_tests:
+          - not_null
+
+  - name: stg_tpch__customer
+    description: "Staged customer data from TPCH"
+    columns:
+      - name: customer_key
+        description: "The primary key of the customer"
+        data_tests:
+          - unique
+          - not_null
+      - name: nation_key
+        description: "Foreign key to nation"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__nation')
+              field: nation_key
+      - name: market_segment
+        data_tests:
+          - not_null
+
+  - name: stg_tpch__nation
+    description: "Staged nation data from TPCH"
+    columns:
+      - name: nation_key
+        description: "The primary key of the nation"
+        data_tests:
+          - unique
+          - not_null
+      - name: nation_name
+        description: "The name of the nation"
+        data_tests:
+          - unique
+          - not_null
+      - name: region_key
+        description: "Foreign key to region"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__region')
+              field: region_key
+
+  - name: stg_tpch__region
+    description: "Staged region data from TPCH"
+    columns:
+      - name: region_key
+        description: "The primary key of the region"
+        data_tests:
+          - unique
+          - not_null
+      - name: region_name
+        description: "The name of the region"
+        data_tests:
+          - unique
+          - not_null
+
+  - name: stg_tpch__part
+    description: "Staged part data from TPCH"
+    columns:
+      - name: part_key
+        description: "The primary key of the part"
+        data_tests:
+          - unique
+          - not_null
+      - name: part_name
+        description: "The name of the part"
+        data_tests:
+          - not_null
+      - name: retail_price
+        description: "The retail price of the part"
+        data_tests:
+          - not_null
+
+  - name: stg_tpch__lineitem
+    description: "Staged lineitem data from TPCH"
+    columns:
+      - name: order_key
+        description: "Foreign key to orders"
+        data_tests:
+          - not_null
+          - unique
+      - name: part_key
+        description: "Foreign key to part"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tpch__part')
+              field: part_key
+      - name: quantity
+        description: "Quantity ordered"
+        data_tests:
+          - not_null
+
+      - name: extended_price
+        description: "Extended price of the line item"
+        data_tests:
+          - not_null
+
+      - name: discount
+        description: "Discount percentage"
+        data_tests:
+          - not_null
+
+      - name: tax
+        description: "Tax rate"
+        data_tests:
+          - not_null

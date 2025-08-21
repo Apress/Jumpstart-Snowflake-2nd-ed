@@ -1,0 +1,78 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension table with detailed customer and geographic information"
+    columns:
+      - name: customer_key
+        description: "Primary key for the customer"
+        data_tests:
+          - unique
+          - not_null
+      - name: market_segment
+        description: "Market segment of the customer"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                [
+                  "AUTOMOBILE",
+                  "BUILDING",
+                  "FURNITURE",
+                  "MACHINERY",
+                  "HOUSEHOLD",
+                ]
+      - name: nation_name
+        description: "Name of the customer's nation"
+        data_tests:
+          - not_null
+      - name: region_name
+        description: "Name of the customer's region"
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["AFRICA", "AMERICA", "ASIA", "EUROPE", "MIDDLE EAST"]
+
+  - name: dim_product
+    description: "Product dimension table with product details"
+    columns:
+      - name: product_key
+        description: "Primary key for the product"
+        data_tests:
+          - unique
+          - not_null
+      - name: manufacturer
+        description: "Manufacturer of the product"
+        data_tests:
+          - not_null
+      - name: retail_price
+        description: "Retail price of the product"
+        data_tests:
+          - not_null
+
+  - name: fact_order
+    description: "Fact table capturing order and line item details"
+    columns:
+      - name: order_key
+        description: "Primary key for the order"
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_key
+        description: "Foreign key to the customer dimension"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customer_key
+      - name: product_key
+        description: "Foreign key to the product dimension"
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: product_key
+      - name: final_price
+        description: "Final price after discounts and taxes"
+        data_tests:
+          - not_null
